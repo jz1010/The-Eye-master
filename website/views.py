@@ -1,13 +1,19 @@
 from flask import Blueprint, render_template, session, request, flash, redirect, json
 
 import os
-# import editjson file
+import pickle
 from werkzeug.datastructures import MultiDict
 
 from website import editjson
 
 views = Blueprint('views', __name__)
-
+cur_path = os.path.dirname(__file__)
+settings_dir="..\\settings\\"
+file_path = os.path.join(cur_path, f'{settings_dir}temp.json')
+#if file does not exist, create it
+if not os.path.exists(file_path):
+    with open(file_path, 'w') as f:
+        json.dump({}, f)
 
 @views.route('/')
 def home():
@@ -47,7 +53,7 @@ def dev_settings():
 
     else:
         cur_path = os.path.dirname(__file__)
-        file_path = os.path.join(cur_path, '..\\settings\\settings_template.json')
+        file_path = os.path.join(cur_path, f'{settings_dir}settings_template.json')
         with open(file_path) as json_file:
             data = json.load(json_file)
         print(data)
@@ -88,7 +94,9 @@ def dev_settings():
             di=(dict(result))
             print(di)
 
-        #print(data)
+            file_path = os.path.join(cur_path, f'{settings_dir}temp.json')
+            with open(file_path, 'w') as json_file:
+                json.dump(di, json_file)
 
         return render_template('dev_settings.html', data=data)
 
@@ -98,11 +106,55 @@ def dev_custom():
         return redirect('/')
     else:
         cur_path = os.path.dirname(__file__)
-        file_path = os.path.join(cur_path, '..\\settings\\settings_template.json')
+        file_path = os.path.join(cur_path, f'{settings_dir}settings_template.json')
         with open(file_path) as json_file:
             data = json.load(json_file)
         print(data)
         print(data["hack"])
+
+        if request.method=="POST":
+            if request.form['submit_button']=='Test Eye':
+                result={"hack":
+                    [
+                        {
+                            "eye.shape":request.form["eye_shape"],
+                            "iris.art":request.form["iris_art"],
+                            "lid.art":request.form["lid_art"],
+                            "sclera.art":request.form["sclera_art"],
+                        }
+                    ]
+                    }
+                file_path = os.path.join(cur_path, f'{settings_dir}temp.json')
+                with open(file_path, 'w') as json_file:
+                    json.dump(result, json_file)
+
+            elif request.form['submit_button']=='Save Eye':
+                result = [
+                    request.form["eye_shape"],
+                    request.form["iris_art"],
+                    request.form["lid_art"],
+                    request.form["sclera_art"],
+                    ]
+                #load pickle file and add append result list to it
+
+                cur_path = os.path.dirname(__file__)
+                file_path = os.path.join(cur_path, f'{settings_dir}custom_eyes.pickle')
+                #if pickle file doesn't exist create it
+                if not os.path.exists(file_path):
+                    with open(file_path, 'wb') as f:
+                        pickle.dump([result], f)
+                else:
+                    with open(file_path, 'rb') as f:
+                        custom_eyes = pickle.load(f)
+                    custom_eyes.append(result)
+                    with open(file_path, 'wb') as f:
+                        pickle.dump(custom_eyes, f)
+
+            else:
+                pass
+            print(result)
+
+
         return render_template('dev_custom.html',
                                data=data,
                                cur_eye_shape=data["hack"][0]["eye.shape"],

@@ -274,7 +274,7 @@ class gecko_eye_t(object):
             'joystick_test' : False, # No test messages from joystick
             'joystick_mode' : 0, # 0: Discrete mode, 1: Continuous mode
             'eye_queue_max' : 1, # maximum depth of eye event queue
-#            'eye_queue_max' : 5, # maximum depth of eye event queue            
+#           'eye_queue_max' : 5, # maximum depth of eye event queue
             'screenshots' : False, # Enumerates graphics and take screenshots
             'timeout_secs':None, # 1 hour (60 min * 60 sec)
             'eye_orientation': 'right', # Default right eye orientation

@@ -94,8 +94,8 @@ def dev_settings():
             di=(dict(result))
             print(di)
 
-            file_path = os.path.join(cur_path, f'{settings_dir}temp.json')
-            with open(file_path, 'w') as json_file:
+            #file_path = os.path.join(cur_path, f'{settings_dir}temp.json')
+            with open(r"/home/pi/temp.json", 'w') as json_file:
                 json.dump(di, json_file)
 
         return render_template('dev_settings.html', data=data)
@@ -124,8 +124,10 @@ def dev_custom():
                         }
                     ]
                     }
-                file_path = os.path.join(cur_path, f'{settings_dir}temp.json')
-                with open(file_path, 'w') as json_file:
+                #set file path to /home/pi/temp.json
+
+                #file_path = os.path.join(cur_path, f'{settings_dir}temp.json')
+                with open(r"/home/pi/temp.json", 'w') as json_file:
                     json.dump(result, json_file)
 
             elif request.form['submit_button']=='Save Eye':
